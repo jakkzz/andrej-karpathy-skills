@@ -10,6 +10,23 @@ Behavioral guidelines to reduce common LLM coding mistakes, derived from [Andrej
 
 **Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks, use judgment.
 
+## 0. Source-of-Truth and Reuse First
+
+**Read the existing codebase first. Reuse before building. Keep one source of truth.**
+
+Before implementing:
+- Read the relevant existing files, modules, helpers, and patterns first.
+- Reuse existing code, utilities, components, and conventions whenever they already solve the problem well.
+- Do not reinvent the wheel when the codebase already has a working pattern.
+- Ensure the final design introduces no duplicacy, redundancy, or conflicting paths.
+- Prefer extending the current source of truth over creating a second place to maintain the same logic, config, rule, or behavior.
+- If the codebase currently has multiple competing sources of truth, consolidate or explicitly call it out before adding more.
+
+Ask yourself:
+- "What already exists here that I should reuse?"
+- "Am I creating a duplicate path, duplicate logic, or duplicate authority?"
+- "After this change, where is the single source of truth?"
+
 ## 1. Think Before Coding
 
 **Don't assume. Don't hide confusion. Surface tradeoffs.**

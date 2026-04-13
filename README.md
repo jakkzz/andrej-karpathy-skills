@@ -14,16 +14,33 @@ From Andrej's post:
 
 ## The Solution
 
-Four principles in one file that directly address these issues:
+The canonical rules live in exactly one place:
+
+- **`skills/karpathy-guidelines/SKILL.md`** — single source of truth
+
+Everything else should reference that file instead of duplicating and drifting.
+
+Five principles directly address these issues:
 
 | Principle | Addresses |
 |-----------|-----------|
+| **Source-of-Truth and Reuse First** | Reinventing the wheel, duplicate logic, conflicting implementations |
 | **Think Before Coding** | Wrong assumptions, hidden confusion, missing tradeoffs |
 | **Simplicity First** | Overcomplication, bloated abstractions |
 | **Surgical Changes** | Orthogonal edits, touching code you shouldn't |
 | **Goal-Driven Execution** | Leverage through tests-first, verifiable success criteria |
 
-## The Four Principles in Detail
+## The Principles in Detail
+
+### 0. Source-of-Truth and Reuse First
+
+**Read the existing codebase first. Reuse before building. Keep one source of truth.**
+
+- Read the relevant existing files, helpers, and patterns first
+- Reuse existing code and conventions whenever they already solve the problem
+- Do not reinvent the wheel when the codebase already has a working pattern
+- Ensure no duplicacy, redundancy, or conflict
+- Prefer extending the current source of truth over creating a second place to maintain the same logic
 
 ### 1. Think Before Coding
 
@@ -138,7 +155,12 @@ These guidelines are working if you see:
 
 ## Customization
 
-These guidelines are designed to be merged with project-specific instructions. Add them to your existing `CLAUDE.md` or create a new one.
+These guidelines are designed to be merged with project-specific instructions.
+
+To preserve a single source of truth:
+- keep the full canonical rules in `skills/karpathy-guidelines/SKILL.md`
+- keep `CLAUDE.md` as a thin pointer or project-specific overlay
+- avoid copying the full rules into multiple files unless you have an explicit generation step
 
 For project-specific rules, add sections like:
 

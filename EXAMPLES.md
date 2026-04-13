@@ -1,6 +1,84 @@
 # Examples
 
-Real-world code examples demonstrating the four principles. Each example shows what LLMs commonly do wrong and how to fix it.
+Real-world code examples demonstrating the principles. Each example shows what LLMs commonly do wrong and how to fix it.
+
+---
+
+## 0. Source-of-Truth and Reuse First
+
+### Example 1: Reinventing Existing Utilities
+
+**User Request:** "Add slug generation for article URLs"
+
+**❌ What LLMs Do (Reinvent the Wheel)**
+
+```python
+import re
+
+def make_slug(title: str) -> str:
+    title = title.lower().strip()
+    title = re.sub(r'[^a-z0-9]+', '-', title)
+    return title.strip('-')
+```
+
+**Problems:**
+- Assumes no slug helper already exists
+- Creates a second implementation to maintain
+- Risks inconsistent behavior across the app
+
+**✅ What Should Happen (Read and Reuse First)**
+
+```python
+# First inspect the codebase for existing helpers:
+# - utils/slug.py
+# - model hooks
+# - shared string helpers
+
+from utils.slug import slugify
+
+article.slug = slugify(article.title)
+```
+
+**Better behavior:**
+- Reuses the existing implementation
+- Preserves one source of truth for slug behavior
+- Avoids drift and conflicting URL formats
+
+### Example 2: Duplicate Configuration
+
+**User Request:** "Increase upload size limit to 20MB"
+
+**❌ What LLMs Do (Create a Second Source of Truth)**
+
+```python
+# uploads.py
+MAX_UPLOAD_MB = 20
+
+# api.py
+if file.size > 20 * 1024 * 1024:
+    raise ValueError('Too large')
+```
+
+**Problems:**
+- Same rule stored in multiple places
+- Easy for values to drift apart later
+- Harder to update safely
+
+**✅ What Should Happen**
+
+```python
+# settings.py
+MAX_UPLOAD_MB = 20
+MAX_UPLOAD_BYTES = MAX_UPLOAD_MB * 1024 * 1024
+
+# api.py
+from settings import MAX_UPLOAD_BYTES
+
+if file.size > MAX_UPLOAD_BYTES:
+    raise ValueError('Too large')
+```
+
+**The rule:** one place defines the limit, all other code reads from it.
 
 ---
 
@@ -499,6 +577,7 @@ def sort_scores(scores):
 
 | Principle | Anti-Pattern | Fix |
 |-----------|-------------|-----|
+| Source-of-Truth and Reuse First | Reimplements existing helper or stores same rule twice | Read first, reuse existing code, keep one authoritative definition |
 | Think Before Coding | Silently assumes file format, fields, scope | List assumptions explicitly, ask for clarification |
 | Simplicity First | Strategy pattern for single discount calculation | One function until complexity is actually needed |
 | Surgical Changes | Reformats quotes, adds type hints while fixing bug | Only change lines that fix the reported issue |
